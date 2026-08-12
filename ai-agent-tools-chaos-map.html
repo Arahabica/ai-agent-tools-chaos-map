@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIエージェント周辺ツール カオスマップ 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAFBF7;
+  --grid:#E4E9E0;
+  --ink:#17212B;
+  --sub:#5B6672;
+  --line:#C9D2CC;
+  --panel:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"IBM Plex Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:28px 28px;
+  line-height:1.5;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 20px 64px}
+
+/* ---------- header ---------- */
+header{border-bottom:3px solid var(--ink);padding-bottom:20px;margin-bottom:12px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--sub);margin-bottom:8px}
+h1{font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:clamp(26px,5vw,44px);line-height:1.25}
+h1 .accent{color:#B4552D}
+.subtitle{margin-top:10px;font-size:14px;color:var(--sub);max-width:720px}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:16px;align-items:center}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:12.5px;align-items:center}
+.legend .chip{cursor:default}
+.legend-note{font-family:"IBM Plex Mono",monospace;color:var(--sub);font-size:11px}
+.toggle{
+  font-family:"IBM Plex Sans JP",sans-serif;
+  font-size:13px;font-weight:700;
+  border:2px solid var(--ink);background:var(--ink);color:#fff;
+  border-radius:6px;padding:8px 16px;cursor:pointer;
+}
+.toggle:hover{opacity:.85}
+body.detail .toggle{background:#fff;color:var(--ink)}
+
+/* ---------- zones ---------- */
+.zone{display:flex;gap:16px;margin-top:28px}
+.zone-rail{
+  flex:0 0 34px;
+  writing-mode:vertical-rl;
+  font-family:"Shippori Mincho B1",serif;
+  font-weight:700;font-size:17px;letter-spacing:.35em;
+  color:#fff;text-align:center;
+  border-radius:6px;padding:14px 0;
+  display:flex;align-items:center;justify-content:center;
+}
+.zone-body{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-content:start}
+body.detail .zone-body{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}
+@media(max-width:520px){body.detail .zone-body{grid-template-columns:1fr}}
+
+/* ---------- panels ---------- */
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-top:4px solid var(--hue,#888);
+  border-radius:8px;
+  padding:14px 14px 12px;
+  box-shadow:0 1px 0 rgba(23,33,43,.06);
+}
+.panel h2{font-size:14.5px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.panel h2 .count{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:400;color:var(--sub)}
+.panel .desc{font-size:11.5px;color:var(--sub);margin:2px 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+body.detail .chips{flex-direction:column;gap:5px}
+
+/* ---------- chips ---------- */
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12.5px;font-weight:500;
+  padding:4px 9px;border-radius:5px;
+  border:1px solid var(--line);
+  background:#fff;
+}
+.chip .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.chip.saas .dot{background:var(--ink)}
+.chip.oss  .dot{background:#fff;border:1.6px solid var(--ink)}
+.chip.both .dot{background:linear-gradient(90deg,var(--ink) 50%,#fff 50%);border:1.6px solid var(--ink)}
+.chip.oss{border-style:dashed}
+.chip.both{border-style:solid;border-color:var(--ink)}
+.chip.bt{background:#EBEDE4;border-color:#97A29B}
+.chip .tdesc{display:none}
+body.detail .chip{align-items:flex-start;padding:6px 10px}
+body.detail .chip .dot{margin-top:5px}
+body.detail .chip .tname{font-weight:700;flex:none;min-width:9.5em}
+body.detail .chip .tdesc{display:block;font-weight:400;font-size:12px;color:var(--sub)}
+@media(max-width:520px){
+  body.detail .chip{flex-wrap:wrap}
+  body.detail .chip .tname{min-width:0}
+  body.detail .chip .tdesc{flex-basis:100%;padding-left:14px}
+}
+
+footer{margin-top:36px;border-top:1px solid var(--line);padding-top:14px;font-size:11.5px;color:var(--sub)}
+footer p+p{margin-top:4px}
+
+@media(max-width:640px){
+  .zone{gap:10px}
+  .zone-rail{flex-basis:28px;font-size:14px;letter-spacing:.25em}
+}
+@media print{
+  body{background:none}
+  .toggle{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">CHAOS MAP — AI AGENT TOOLING / 2026.08</div>
+  <h1>AIエージェント<span class="accent">周辺ツール</span>カオスマップ</h1>
+  <p class="subtitle">生成AIモデルそのものではなく、エージェントを「作る・つなぐ・動かす・支える」ための周辺ツール約120個を4レイヤー × 16カテゴリに整理。</p>
+  <div class="controls">
+    <button class="toggle" id="viewToggle">説明付き一覧に切り替え</button>
+    <div class="legend">
+      <span class="chip saas"><span class="dot"></span>SaaS / 商用</span>
+      <span class="chip oss"><span class="dot"></span>オープンソース</span>
+      <span class="chip both"><span class="dot"></span>OSS + 商用版あり</span>
+      <span class="chip saas bt"><span class="dot"></span>塗り背景 = BigTech / 大手提供</span>
+      <span class="legend-note">※ 区分は代表的な提供形態(2026年8月時点の概略)。「大手」= メガクラウド・大手テック・フロンティアAIラボの自社提供</span>
+    </div>
+  </div>
+</header>
+
+<div id="map"></div>
+
+<footer>
+  <p>収録基準:AIエージェントの開発・構築・実行・運用に使う周辺ツール。基盤モデル(GPT / Claude / Gemini 等)そのものは対象外。</p>
+  <p>分類は便宜的なもので、複数カテゴリにまたがるツールは主用途に寄せて配置。ロゴ非掲載・名称のみのテキスト表記。</p>
+</footer>
+
+</div>
+
+<script>
+const S="saas",O="oss",B="both";
+const zones=[
+{
+  name:"つくる",color:"#B4552D",
+  cats:[
+    {title:"自律型開発エージェント",hue:"#B4552D",desc:"タスクを委任するとコードやPRが非同期で返ってくる",
+     tools:[
+      ["Devin",S,"Cognition社の自律型AIエンジニア。Slack等からタスクを丸ごと委任"],
+      ["OpenHands",O,"旧OpenDevin。OSSの自律型開発エージェントプラットフォーム"],
+      ["Jules",S,"Googleの非同期コーディングエージェント。GitHub連携でバックグラウンド実行",1],
+      ["OpenAI Codex",S,"OpenAIのコーディングエージェント。クラウドで並列タスク実行",1],
+      ["Claude Code",S,"Anthropic製エージェント。CLI・Web・モバイルから開発を委任",1],
+      ["Pi Agent",O,"4ツールのみの超ミニマルOSSエージェント。OpenClawの基盤エンジン"],
+      ["OpenCode",O,"モデル非依存のOSSターミナルエージェント。Claude CodeのOSS代替の代表格"]
+     ]},
+    {title:"アプリ生成 / プロトタイピング",hue:"#C97B3D",desc:"自然言語からUI・アプリを丸ごと生成",
+     tools:[
+      ["v0",S,"Vercel製。プロンプトからUI/Reactアプリを生成しそのままデプロイ"],
+      ["Bolt.new",B,"StackBlitz製。ブラウザ内でフルスタックアプリ生成(OSS版bolt.diy)"],
+      ["Lovable",S,"自然言語からWebアプリを構築する欧州発の急成長サービス"],
+      ["Replit Agent",S,"Replit上で構築からDB・デプロイまで一気通貫"],
+      ["Base44",S,"ノーコードでフルアプリを生成。Wix傘下"],
+      ["Google AI Studio",S,"Gemini公式の開発ハブ。Buildでプロンプトからアプリ生成・公開",1],
+      ["Google Opal",S,"Google Labs製。ノーコードでAIミニアプリを構築・共有",1],
+      ["Create",S,"テキストからサイト・アプリ・ツールを生成"]
+     ]},
+  ]
+},
+{
+  name:"つなぐ",color:"#3D6B4F",
+  cats:[
+    {title:"エージェントフレームワーク / SDK",hue:"#3D6B4F",desc:"エージェントをコードで組むための開発基盤",
+     tools:[
+      ["LangChain",O,"LLMアプリ開発の定番OSSフレームワーク。エコシステムが最大級"],
+      ["LangGraph",B,"状態グラフでエージェントの制御フローを厳密に設計。商用Platformあり"],
+      ["LlamaIndex",B,"RAG・データ接続に強いフレームワーク。エージェント機能も充実"],
+      ["CrewAI",B,"役割ベースのマルチエージェント「クルー」を手軽に構築"],
+      ["AutoGen (AG2)",O,"Microsoft発のマルチエージェント会話フレームワーク",1],
+      ["Semantic Kernel",O,"Microsoft製のエンタープライズ向けエージェントSDK",1],
+      ["OpenAI Agents SDK",O,"OpenAI公式の軽量エージェントSDK。ハンドオフ機構が特徴",1],
+      ["Google ADK",O,"GoogleのAgent Development Kit。A2Aプロトコルと連携",1],
+      ["Mastra",B,"TypeScript向けエージェントフレームワーク。Gatsby開発陣が開発"],
+      ["Pydantic AI",O,"型安全なPythonエージェントFW。Pydanticチーム製"],
+      ["smolagents",O,"Hugging Face製の軽量エージェント。コード実行型が特徴"],
+      ["Vercel AI SDK",O,"TS/JSでAI機能を実装する事実上の標準SDK"],
+      ["Haystack",B,"deepset製。検索・RAGパイプライン構築の老舗OSS"],
+      ["Strands Agents",O,"AWS発のOSSエージェントSDK。モデル駆動アプローチ",1]
+     ]},
+    {title:"ワークフロー自動化 / ノーコード",hue:"#5C8A46",desc:"GUIでエージェント・自動化フローを構築",
+     tools:[
+      ["n8n",B,"セルフホスト可能なワークフロー自動化。AIエージェントノードが強力"],
+      ["Dify",B,"LLMアプリ/エージェントをGUIで構築できる人気OSS"],
+      ["Zapier",S,"8,000超のアプリ連携を誇る自動化の老舗。AIエージェント機能も追加"],
+      ["OpenAI AgentKit",S,"OpenAI公式。Agent Builder等でエージェントをGUI構築・組込",1],
+      ["Make",S,"ビジュアル重視のワークフロー自動化。複雑な分岐に強い"],
+      ["Flowise",B,"ノードベースでLLMフローを組めるOSSビルダー"],
+      ["Langflow",B,"LangChainベースのビジュアルビルダー"],
+      ["Gumloop",S,"AI特化のワークフロー自動化SaaS"],
+      ["Lindy",S,"ノーコードでAIアシスタント/エージェントを作成"],
+      ["Activepieces",B,"OSSのZapier代替。MCP対応で拡張しやすい"],
+      ["Relevance AI",S,"ノーコードで「AIワークフォース」を構築"]
+     ]},
+    {title:"メモリ / MCP・ツール連携",hue:"#2E7D6B",desc:"長期記憶と外部ツール接続(MCP)のハブ",
+     tools:[
+      ["Mem0",B,"エージェント用の長期メモリレイヤー。ユーザーごとの記憶を保持"],
+      ["Zep",B,"会話履歴からナレッジグラフを構築するメモリ基盤"],
+      ["Letta",B,"旧MemGPT。メモリを持続するステートフルエージェント基盤"],
+      ["Composio",S,"エージェントと数百のSaaSをつなぐツール連携基盤"],
+      ["Arcade",B,"認証付きでエージェントにツールを安全に実行させる基盤"],
+      ["Smithery",S,"MCPサーバーのレジストリ/ホスティング"],
+      ["Pipedream",S,"API連携基盤。数千のアプリをMCPサーバーとして提供"],
+      ["FastMCP",O,"MCPサーバー構築の定番Pythonフレームワーク"]
+     ]},
+  ]
+},
+{
+  name:"うごかす",color:"#31517A",
+  cats:[
+    {title:"エージェント管理 / 実行基盤",hue:"#31517A",desc:"複数エージェントの割当・進捗管理・サンドボックス実行",
+     tools:[
+      ["Multica",O,"エージェントをIssueの担当者として扱うOSS管理基盤。スキル共有機能も"],
+      ["Orcha",S,"Claude/Gemini/Codexを並列統括するマルチエージェント・オーケストレーター"],
+      ["Temporal",B,"耐久性のあるワークフロー実行エンジン。長時間タスクの信頼性を担保"],
+      ["Inngest",B,"イベント駆動のワークフロー/エージェント実行基盤"],
+      ["E2B",B,"エージェント用のコード実行サンドボックス"],
+      ["Modal",S,"サーバーレスGPU/Python実行基盤。AIワークロードに最適"],
+      ["Daytona",B,"エージェント向けの高速開発環境サンドボックス"]
+     ]},
+    {title:"クラウドAIエージェント基盤",hue:"#274B6D",desc:"大手クラウド・SaaSベンダーのマネージドエージェント基盤",
+     tools:[
+      ["Amazon Bedrock",S,"AWSの生成AI基盤。Agents/AgentCoreでエージェントの構築から本番運用まで",1],
+      ["Azure AI Foundry",S,"Microsoftの AI開発基盤。Agent Serviceとモデルカタログを統合",1],
+      ["Vertex AI Agent Builder",S,"Google Cloudのエージェント構築・実行基盤。ADK/A2Aと連携",1],
+      ["Copilot Studio",S,"Microsoft製。ノーコードで業務エージェントを構築しTeams等へ配置",1],
+      ["Salesforce Agentforce",S,"CRMデータと連携する業務エージェント基盤。デジタルレイバーを掲げる",1]
+     ]},
+    {title:"パーソナルAIエージェント",hue:"#6A88B0",desc:"メッセンジャーから話しかける自分専用エージェント",
+     tools:[
+      ["OpenClaw",O,"WhatsApp/LINE等30超のチャネル対応のOSS個人エージェント。スキル共有のClawHubも"],
+      ["Hermes Agent",O,"Nous Research製。経験からスキルを自動獲得する自己学習型OSSエージェント"],
+      ["NanoClaw",O,"コンテナ隔離を前提にしたセキュリティ重視の軽量OSSエージェント"],
+      ["NemoClaw",O,"NVIDIA製。OpenClawにサンドボックスや監査ログを加えるセキュリティ層",1]
+     ]},
+    {title:"汎用AIエージェント / スーパーエージェント",hue:"#456A94",desc:"1つの指示で調査から成果物作成まで完遂する万能型",
+     tools:[
+      ["Genspark",S,"スーパーエージェントを核に調査・スライド・電話代行まで自律実行"],
+      ["Manus",S,"調査から作業実行まで行う汎用自律エージェント。ブームの火付け役"]
+     ]},
+    {title:"ブラウザ / コンピュータ操作",hue:"#3E6E96",desc:"Web画面やPCをエージェントが直接操作",
+     tools:[
+      ["Browser Use",B,"LLMにブラウザを操作させる人気OSSライブラリ"],
+      ["Stagehand",O,"Browserbase製のAIブラウザ自動化SDK。コードとAIを併用"],
+      ["Browserbase",S,"エージェント向けヘッドレスブラウザのクラウド基盤"],
+      ["Skyvern",B,"LLM+コンピュータビジョンでブラウザ作業を自動化"],
+      ["Playwright MCP",O,"Playwright公式のMCPサーバー。アクセシビリティツリーで操作",1],
+      ["Steel",B,"エージェント向けブラウザAPI基盤"]
+     ]},
+    {title:"LLMゲートウェイ / 推論・ローカル実行",hue:"#4A5E8C",desc:"モデル呼び出しの統合・高速推論・ローカル実行",
+     tools:[
+      ["OpenRouter",S,"数百のモデルを単一APIで呼べるゲートウェイ"],
+      ["LiteLLM",B,"100超のLLM APIをOpenAI形式に統一するOSSプロキシ"],
+      ["Ollama",O,"ローカルLLM実行の定番。1コマンドでモデルを起動"],
+      ["vLLM",O,"高スループット推論エンジンの標準OSS"],
+      ["LM Studio",S,"GUIでローカルLLMを動かすデスクトップアプリ"],
+      ["Groq",S,"独自LPUによる超高速推論API"],
+      ["Together AI",S,"OSSモデルのクラウド推論/ファインチューニング基盤"],
+      ["Fireworks AI",S,"高速・低コストのモデル推論基盤"],
+      ["Replicate",S,"公開モデルをAPIで即実行できるプラットフォーム"],
+      ["Baseten",S,"モデルのデプロイ/推論基盤。本番運用向け"]
+     ]},
+    {title:"音声 / 対話エージェント",hue:"#5A7AA6",desc:"電話・音声UIのリアルタイムエージェント",
+     tools:[
+      ["ElevenLabs",S,"音声合成の代表格。会話エージェント基盤も提供"],
+      ["Vapi",S,"音声AIエージェントを構築するための開発者向けAPI"],
+      ["Retell AI",S,"電話対応AIエージェントの構築基盤"],
+      ["LiveKit",B,"リアルタイム音声/映像のOSS基盤。音声エージェントSDKが人気"],
+      ["Pipecat",O,"音声・マルチモーダルエージェントのOSSフレームワーク"],
+      ["Bland AI",S,"架電・受電を自動化する電話AI"]
+     ]},
+  ]
+},
+{
+  name:"ささえる",color:"#6B4F7A",
+  cats:[
+    {title:"検索 / エンタープライズナレッジ",hue:"#6B4F7A",desc:"社内外の情報をエージェントに供給する検索層",
+     tools:[
+      ["Glean",S,"社内データを横断検索するエンタープライズAIアシスタント"],
+      ["Perplexity",S,"AI検索エンジンの代表格。検索APIも提供"],
+      ["NotebookLM",S,"Google製。手持ち資料だけを根拠に回答・音声解説するリサーチ基盤",1],
+      ["Notion AI",S,"Notion内のドキュメント・ナレッジをAIで横断活用"],
+      ["Exa",S,"AI/エージェント向けのセマンティックWeb検索API"],
+      ["Tavily",S,"エージェント向けに最適化されたWeb検索API"],
+      ["Firecrawl",B,"WebサイトをLLM向けデータに変換するクローラー"],
+      ["Jina AI",B,"Reader等のWebデータ取得・埋め込みAPI群"],
+      ["Guru",S,"社内ナレッジ管理+AI検索"]
+     ]},
+    {title:"データ / RAG基盤",hue:"#84588C",desc:"ベクトルDB・ドキュメント解析・セマンティックレイヤー",
+     tools:[
+      ["Pinecone",S,"マネージドベクトルDBの代表格"],
+      ["Weaviate",B,"ハイブリッド検索に強いOSSベクトルDB"],
+      ["Qdrant",B,"Rust製の高速OSSベクトルDB"],
+      ["Chroma",B,"開発者に人気の軽量ベクトルDB"],
+      ["Milvus",B,"大規模向けOSSベクトルDB。Zillizが商用版を提供"],
+      ["pgvector",O,"PostgreSQLにベクトル検索を追加する拡張"],
+      ["LlamaParse",S,"複雑なPDF・表を高精度解析するLlamaIndex系サービス"],
+      ["Unstructured",B,"非構造化データをLLM向けに変換するETL"],
+      ["Reducto",S,"高精度ドキュメント解析API"],
+      ["Airbyte",B,"データ統合(ELT)の定番OSS"],
+      ["dbt",B,"データ変換の業界標準ツール"],
+      ["Cube",B,"セマンティックレイヤー。AIにデータの「意味」を提供し正確な分析を実現"]
+     ]},
+    {title:"評価 / オブザーバビリティ",hue:"#7A5670",desc:"プロンプト評価・トレース・コスト監視",
+     tools:[
+      ["LangSmith",S,"LangChain製のトレース/評価プラットフォーム"],
+      ["Langfuse",B,"OSSのLLMオブザーバビリティの代表格"],
+      ["Braintrust",S,"評価・実験管理プラットフォーム"],
+      ["Arize Phoenix",B,"OSSのトレース/評価ツール"],
+      ["W&B Weave",B,"Weights & BiasesのLLMアプリ評価/監視"],
+      ["Helicone",B,"LLM APIの監視・コスト管理"],
+      ["AgentOps",B,"エージェント特化の監視/デバッグツール"],
+      ["Promptfoo",O,"OSSのプロンプト評価/レッドチーミング"],
+      ["DeepEval",O,"単体テスト感覚で使えるOSSのLLM評価FW"],
+      ["Datadog LLM Obs.",S,"DatadogのLLM監視機能。既存監視と統合",1]
+     ]},
+    {title:"セキュリティ / ガードレール",hue:"#93456B",desc:"プロンプトインジェクション対策・出力制御",
+     tools:[
+      ["Lakera",S,"プロンプトインジェクション対策の代表格"],
+      ["Guardrails AI",B,"入出力バリデーションのOSS+バリデータHub"],
+      ["NeMo Guardrails",O,"NVIDIA製の対話ガードレールOSS",1],
+      ["LLM Guard",O,"入出力のサニタイズを行うOSSツール"],
+      ["Prompt Security",S,"企業向け生成AIセキュリティ基盤"],
+      ["Protect AI",S,"AIセキュリティ統合。Palo Alto Networks傘下"]
+     ]},
+  ]
+}
+];
+
+const map=document.getElementById("map");
+zones.forEach(z=>{
+  const zone=document.createElement("div");
+  zone.className="zone";
+  const rail=document.createElement("div");
+  rail.className="zone-rail";
+  rail.style.background=z.color;
+  rail.textContent=z.name;
+  const body=document.createElement("div");
+  body.className="zone-body";
+  z.cats.forEach(c=>{
+    const p=document.createElement("section");
+    p.className="panel";
+    p.style.setProperty("--hue",c.hue);
+    p.innerHTML=`<h2>${c.title}<span class="count">${c.tools.length}</span></h2><p class="desc">${c.desc}</p>`;
+    const chips=document.createElement("div");
+    chips.className="chips";
+    c.tools.forEach(([name,type,tdesc,bt])=>{
+      const chip=document.createElement("span");
+      chip.className=`chip ${type}${bt?" bt":""}`;
+      chip.innerHTML=`<span class="dot"></span><span class="tname">${name}</span><span class="tdesc">${tdesc}</span>`;
+      chips.appendChild(chip);
+    });
+    p.appendChild(chips);
+    body.appendChild(p);
+  });
+  zone.appendChild(rail);
+  zone.appendChild(body);
+  map.appendChild(zone);
+});
+
+const btn=document.getElementById("viewToggle");
+btn.addEventListener("click",()=>{
+  document.body.classList.toggle("detail");
+  btn.textContent=document.body.classList.contains("detail")
+    ? "マップ表示に戻す"
+    : "説明付き一覧に切り替え";
+});
+</script>
+</body>
+</html>
