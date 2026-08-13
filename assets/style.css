@@ -254,6 +254,24 @@ footer p+p{margin-top:3px}
 }
 @media print{body{background:none}}
 
+/* ---------- author credit cards ---------- */
+.credits-block{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.credits-block h3{font-size:12.5px;font-weight:700;letter-spacing:.06em;color:var(--sub);margin-bottom:8px}
+.credit-cards{display:flex;gap:12px;flex-wrap:wrap}
+.credit-card{
+  flex:1 1 280px;max-width:440px;
+  display:flex;align-items:center;gap:12px;
+  background:#fff;border:2px solid var(--ink);
+  padding:12px 14px;text-decoration:none;color:var(--ink);
+  transition:box-shadow .15s,transform .15s;
+}
+.credit-card:hover{box-shadow:0 5px 16px rgba(23,33,43,.2);transform:translateY(-2px)}
+.credit-card img{width:40px;height:40px;flex:none;border:1px solid var(--line);object-fit:cover}
+.credit-card .cc-body{display:flex;flex-direction:column;min-width:0}
+.credit-card .cc-t{font-weight:700;font-size:13.5px;line-height:1.3}
+.credit-card .cc-d{font-size:12px;color:var(--sub);line-height:1.5;margin-top:2px}
+.credit-card .cc-arrow{margin-left:auto;flex:none;font-family:"IBM Plex Mono",monospace;color:var(--sub)}
+
 /* ---------- footer: language switch & credits ---------- */
 .foot-links{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 20px;margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;font-size:12.5px}
 .foot-links a{color:var(--ink);text-decoration:none;border-bottom:1px dashed var(--sub)}
